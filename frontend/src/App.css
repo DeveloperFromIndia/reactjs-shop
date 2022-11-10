@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 1360px;
+}
+.cointainer {
+    display: flex;
+    justify-content: center;
+    width: max-content;
+}
+.fluid-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    background-color: yellow;
+}
