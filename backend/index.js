@@ -14,7 +14,7 @@ const start = async () => {
         await sequelize.authenticate(); // Connection to db 
         await sequelize.sync(); // Reconciliation with the data schema
         app.listen(PORT, () => { console.log(`<Server started on port ${PORT}/>`); })
-    } catch (e) {
+    } catch (e) {   
         console.log(e)
     }
 }
