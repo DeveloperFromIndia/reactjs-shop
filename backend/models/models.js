@@ -5,8 +5,8 @@ import { DataTypes } from "sequelize";
 
 const Language = sequelize.define("language", {
     id:{ type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
-    value:{ type:DataTypes.STRING, unique:true },
-    url:{ type:DataTypes.STRING, unique:true }
+    title:{ type:DataTypes.STRING, unique:true, allowNull: false },
+    url:{ type:DataTypes.STRING, allowNull:true }
 },{freezeTableName:true});
 
 
@@ -84,7 +84,7 @@ const Category = sequelize.define("category", {
 const Category_translate = sequelize.define("category_translate", {
     // category_id FK
     // language_id FK
-    description:{ type:DataTypes.STRING, allowNull:false },
+    description:{ type:DataTypes.STRING, allowNull:true },
     title:{ type:DataTypes.STRING, allowNull: false, unique: true }
 },{freezeTableName:true});
 
@@ -156,7 +156,6 @@ Language.hasOne(Status_translate);
 Brand.hasOne(Product);
 Category.hasOne(Product);
 
-
 Language.hasOne(Category_keyword);
 Category.hasMany(Category_keyword);
 
@@ -177,6 +176,7 @@ Product_in_order.hasOne(Orders);
 Status.hasOne(Orders);
 
 Orders.hasOne(Review);
+
 
 
 export {
