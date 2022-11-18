@@ -17,7 +17,7 @@ const Brand = sequelize.define("brand", {
 },{freezeTableName:true});
 
 
-const User = sequelize.define("user", {
+const User = sequelize.define("users", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
     username:{ type:DataTypes.STRING, unique:true },
     password:{ type: DataTypes.STRING },
@@ -45,7 +45,7 @@ const Product = sequelize.define("product", {
 
 const Product_translate = sequelize.define("product_translate", {
     // product_id FK
-    // language_id FK
+    // language_id FK   
     title:{ type:DataTypes.STRING, unique:true },
     description:{ type:DataTypes.STRING }
 },{freezeTableName:true});
@@ -88,7 +88,7 @@ const Category_translate = sequelize.define("category_translate", {
     title:{ type:DataTypes.STRING, allowNull: false, unique: true }
 },{freezeTableName:true});
 
-const Category_keyword = sequelize.define("category_translate", {
+const Category_keyword = sequelize.define("category_keyword", {
     // category_id FK
     // language_id FK
     value:{ type:DataTypes.STRING, unique:true, allowNull: false }
@@ -106,12 +106,11 @@ const Product_characteristics = sequelize.define("product_characteristics", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     value: { type:DataTypes.STRING, allowNull: false }
     // product FK
-    // Category_characteristics_id FK
-    // language_id FK
+    // category_characteristics_id FK
 },{freezeTableName:true});
 
 
-const Order = sequelize.define("order", {
+const Orders = sequelize.define("orders", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     comment: { type:DataTypes.STRING }
     // user_id FK
@@ -146,44 +145,39 @@ const Review = sequelize.define("review", {
 },{freezeTableName:true});
 
  
-Language.hasMany(Category_translate);
-Category_translate.hasOne(Category);
 
-Category_keyword.hasOne(Category);
-Category_keyword.hasOne(Language);
-  
-Category.hasMany(Product);
+User.hasOne(Cart);
 
-Product_characteristics.hasOne(Language);
-Product_characteristics.hasOne(Category_characteristics);
+Language.hasOne(Product_keyword);
 
-Product.hasMany(Product_img);
-Product.hasOne(Brand);
-Product.hasMany(Product_characteristics);
+Status_translate.hasOne(Status);
+Language.hasOne(Status_translate);
+
+Brand.hasOne(Product);
+Category.hasOne(Product);
+
+
+Language.hasOne(Category_keyword);
+Category.hasMany(Category_keyword);
+
+Language.hasOne(Category_translate);
+Category.hasOne(Category_translate);
+
+Category.hasMany(Category_characteristics);
+Language.hasMany(Category_characteristics);
 
 Language.hasOne(Product_translate);
 Product.hasMany(Product_translate);
 
-Product_keyword.hasOne(Language);
+Category_characteristics.hasMany(Product_characteristics);
+Product.hasMany(Product_characteristics);
 
-User.hasOne(Cart);
+User.hasMany(Orders);
+Product_in_order.hasOne(Orders);
+Status.hasOne(Orders);
 
-Cart.hasMany(Product_in_cart);
-Product.hasMany(Product_in_cart);
+Orders.hasOne(Review);
 
-Category_translate.hasOne(Category);
-Category_characteristics.hasOne(Category);
-Category_keyword.hasOne(Category);
-
-Language.hasOne(Status_translate);
-Status_translate.hasOne(Status);
-
-Product_in_order.hasOne(Product);
-
-Order.hasMany(Product_in_order);
-Order.hasOne(Status);
-
-Review.hasOne(Order);
 
 export {
     Language,
@@ -201,7 +195,7 @@ export {
     Category_keyword,
     Category_translate,
     Cart,
-    Order,
+    Orders,
     Status,
     Status_translate,
     Review 
