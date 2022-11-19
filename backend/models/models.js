@@ -41,10 +41,9 @@ const Product = sequelize.define("product", {
     price:{ type:DataTypes.DOUBLE, defaultValue: 0 },
     price_old:{ type:DataTypes.DOUBLE, defaultValue: 0 },
     amount:{ type:DataTypes.INTEGER },
-    min_order_amount:{ type:DataTypes.INTEGER },
-    max_order_amount:{ type:DataTypes.INTEGER },
+    min_order_amount:{ type:DataTypes.INTEGER, defaultValue:1 },
+    max_order_amount:{ type:DataTypes.INTEGER, allowNull: true, defaultValue: null },
     hiden:{ type:DataTypes.BOOLEAN, defaultValue: false },
-    createdAt: { type:DataTypes.STRING }
 }, { timestamps:true });
 
 const Product_translate = sequelize.define("product_translate", {
@@ -75,7 +74,6 @@ const Product_in_cart = sequelize.define("product_in_cart", {
 
 const Category = sequelize.define("category", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    parent_id:{ type:DataTypes.INTEGER, allowNull: true, defaultValue: null },
     hiden: {type:DataTypes.BOOLEAN, allowNull:false, defaultValue: false}
 }, { timestamps:true });
 
@@ -142,6 +140,7 @@ Brand.hasMany(Product);
 Category.hasMany(Category_translate);
 Category_translate.hasMany(Category_keyword);
 
+Category.belongsTo(Category);
 Category.hasMany(Product);
 Category.hasMany(Category_img);
 Category.hasMany(Category_characteristics);

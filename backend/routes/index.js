@@ -5,6 +5,7 @@ import user from "./UserRouter.js";
 import brand from "./BrandRouter.js";
 import category from "./CategoryRouter.js";
 import language  from "./LanguageRouter.js";
+import currencies from "./CurrenciesRouter.js";
 
 
 
@@ -15,6 +16,7 @@ router.use('/product', product);
 router.use('/brand', brand);
 router.use('/category', category);
 router.use('/user', user);
+router.use('/currencies', currencies);
 
 
 

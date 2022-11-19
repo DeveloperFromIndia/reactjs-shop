@@ -5,9 +5,9 @@ class LanguageController {
     async create(req, res, next) {
         const { title } = req.query;
 
-        if(title !== undefined && title.length) {
+        if(title !== undefined && title.length > 0) {
             try {
-                const lang = await Language.create({title})
+                const lang = await Language.create({title});
                 return res.json(lang);
             } catch (e) {
                 return next(ApiError.forbidden("VALUE ALREADY EXISTS"));
