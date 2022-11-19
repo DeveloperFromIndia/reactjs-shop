@@ -5,7 +5,7 @@ const router = new Router();
 
 
 router.post('/create', LanguageController.create);
-// router.get('/', LanguageController.getAll);
+router.get('/getAll', LanguageController.getAll);
 router.get('/:id', LanguageController.get);
 
 

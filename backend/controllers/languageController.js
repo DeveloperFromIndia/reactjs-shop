@@ -4,17 +4,18 @@ import { Language } from "../models/models.js";
 class LanguageController {
     async create(req, res, next) {
         const { title } = req.query;
-        if (!title || title.length > 1) {
+
+        if(title !== undefined && title.length) {
             try {
                 const lang = await Language.create({title})
                 return res.json(lang);
             } catch (e) {
-                return next(ApiError.forbidden("lang v db or netu title"));
+                return next(ApiError.forbidden("VALUE ALREADY EXISTS"));
             }
         } else {
-            return next(ApiError.badRequest("Uninit ID"));
+            return next(ApiError.badRequest("INSERT VALUE"));
         }
-    }
+    } 
 
     async edit(req, res, next) {
         
@@ -28,7 +29,7 @@ class LanguageController {
     async get(req, res, next) {
         const { id } = req.query;
         if (!id) {
-            return next(ApiError.badRequest("Uninit ID"));
+            return next(ApiError.badRequest("ID NOT EXISTS"));
         } 
         return res.json(id);
     }
