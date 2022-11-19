@@ -10,7 +10,8 @@ const db = new Sequelize(
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         define: {
-            freezeTableName: true
+            freezeTableName: true,
+            timestamps:false
         }
     },
     

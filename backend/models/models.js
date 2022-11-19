@@ -13,7 +13,7 @@ const Language = sequelize.define("language", {
     id:{ type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     title:{ type:DataTypes.STRING, unique:true, allowNull: false },
     url:{ type:DataTypes.STRING, allowNull:true }
-},{freezeTableName:true});
+});
 
 
 const Brand = sequelize.define("brand", {
@@ -21,7 +21,7 @@ const Brand = sequelize.define("brand", {
     value: { type: DataTypes.STRING, unique:true },
     country: { type: DataTypes.STRING },
     url: { type: DataTypes.STRING, allowNull:true }
-},{freezeTableName:true});
+});
 
 
 const Users = sequelize.define("users", {
@@ -32,7 +32,7 @@ const Users = sequelize.define("users", {
     last_name:{ type: DataTypes.STRING },
     phone:{ type:DataTypes.STRING, unique:true },
     email:{ type:DataTypes.STRING, unique:true },
-});
+}, { timestamps: true });
 
 
 const Product = sequelize.define("product", {
@@ -45,7 +45,7 @@ const Product = sequelize.define("product", {
     max_order_amount:{ type:DataTypes.INTEGER },
     hiden:{ type:DataTypes.BOOLEAN, defaultValue: false },
     createdAt: { type:DataTypes.STRING }
-});
+}, { timestamps:true });
 
 const Product_translate = sequelize.define("product_translate", {
     title:{ type:DataTypes.STRING, unique:true },
@@ -65,7 +65,7 @@ const Product_img = sequelize.define("product_img", {
 
 const Cart = sequelize.define("cart", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
-});
+}, { timestamps:true });
 
 const Product_in_cart = sequelize.define("product_in_cart", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
@@ -77,6 +77,11 @@ const Category = sequelize.define("category", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     parent_id:{ type:DataTypes.INTEGER, allowNull: true, defaultValue: null },
     hiden: {type:DataTypes.BOOLEAN, allowNull:false, defaultValue: false}
+}, { timestamps:true });
+
+const Category_img = sequelize.define("category_img", {
+    url:{ type:DataTypes.STRING, allowNull:true },
+    index:{ type:DataTypes.INTEGER, allowNull: false }
 });
 
 const Category_translate = sequelize.define("category_translate", {
@@ -96,7 +101,6 @@ const Category_characteristics = sequelize.define("category_characteristics", {
 });
 
 const Product_characteristics = sequelize.define("product_characteristics", {
-    id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     value: { type:DataTypes.STRING, allowNull: false }
 });
 
@@ -104,12 +108,12 @@ const Product_characteristics = sequelize.define("product_characteristics", {
 const Orders = sequelize.define("orders", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     comment: { type:DataTypes.STRING }
-});
+}, { timestamps:true });
 
 const Product_in_order = sequelize.define("product_in_order", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     amount: { type:DataTypes.INTEGER, allowNull:false }
-});
+}, { timestamps:true });
 
 
 const Status = sequelize.define("status", {
@@ -126,16 +130,42 @@ const Status_translate = sequelize.define("status_translate", {
 const Review = sequelize.define("review", {
     grade:{ type:DataTypes.INTEGER, defaultValue: 0, allowNull: false },    
     text:{ type:DataTypes.STRING, allowNull:true},    
-});
+}, { timestamps:true });
 
  
+Product.hasMany(Product_img);
+Product.hasMany(Product_translate);
+Product_translate.hasMany(Product_keyword);
+Language.hasMany(Product_translate);
+Brand.hasMany(Product);
 
+Category.hasMany(Category_translate);
+Category_translate.hasMany(Category_keyword);
+
+Category.hasMany(Product);
+Category.hasMany(Category_img);
+Category.hasMany(Category_characteristics);
+Language.hasMany(Category_characteristics);
+
+Category_characteristics.hasMany(Product_characteristics);
+Product.hasMany(Product_characteristics);
+
+Cart.hasMany(Product_in_cart);
+Product.hasMany(Product_in_cart);
+
+Users.hasOne(Cart);
+
+Users.hasMany(Orders);
+Status.hasOne(Orders);
+
+Status.hasOne(Status_translate);
+Language.hasMany(Status_translate);
 
 
 export {
     Language,
     Brand,
-    Users as User,
+    Users,
     Product,
     Product_characteristics,
     Product_img,
@@ -144,6 +174,7 @@ export {
     Product_keyword,
     Product_translate,
     Category,
+    Category_img,
     Category_characteristics,
     Category_keyword,
     Category_translate,
