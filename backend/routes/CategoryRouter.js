@@ -5,7 +5,8 @@ const router = new Router();
 
 
 router.post('/create', CategoryController.create);
-router.get('/',CategoryController.getAll);
+router.get('/getAll',CategoryController.getAll);
+router.get('/:id',CategoryController.get);
 
 
 export default router;

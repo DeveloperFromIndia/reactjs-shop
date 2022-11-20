@@ -1,11 +1,13 @@
 import { Router } from "express";
 import ProductController from "../controllers/productController.js";
+import product_img from "./ProductImageRouter.js";
 
 const router = new Router();
 
+router.use('/img', product_img);
 
 router.post('/create', ProductController.create);
-router.get('/', ProductController.getAll);
+router.get('/getAll', ProductController.getAll);
 router.get('/:id', ProductController.get);
 
 

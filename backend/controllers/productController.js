@@ -1,9 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
-import path from "path";
-import { Product } from "../models/models.js";
-import { Product_img } from "../models/models.js";
 import ApiError from "../Error/ApiError.js";
-
+import {} from "dotenv";
+import { Product } from "../models/models.js";
 
 class ProductController {
     async create(req, res, next) {
@@ -11,25 +8,50 @@ class ProductController {
             const { vendor_code, 
                 price, price_old, 
                 amount, min_order_amount, max_order_amount,
-                category_id, brand_id, 
-                hiden } = req.query;
-                
-            // const { img } = req.files;
-            // img.mv(path.resolve(__dirname, '..', 'static', file_name));
-            let file_name = uuidv4() + ".jpg";
-            const product = await Product.create({vendor_code, price, price_old, min_order_amount, max_order_amount, amount, hiden, category_id, brand_id});
-            // const product_img = await Product_img.create({});
+                categoryId, brandId, 
+                hiden 
+            } = req.query;
+            
+            const product = await Product.create({ vendor_code, 
+                price, price_old, 
+                amount, min_order_amount, max_order_amount, 
+                categoryId, brandId,
+                hiden 
+            });
+
             return res.json(product);
         } catch(e) {
             console.error(e);
-            return next(ApiError.forbidden("error"));
+            return next(ApiError.badRequest("VALUE ALREADY EXISTS"));
         }
     } 
     async getAll(req, res) {
+        const { brandId, categoryId } = req.query;
+        let products = null;
         
+        if(!brandId && !categoryId) {
+            products = await Product.findAll();
+        } 
+        else if (brandId && !categoryId) {
+            products = await Product.findAll({where:{ brandId }});
+        }   
+        else if (categoryId && !brandId) {
+            products = await Product.findAll({where:{ categoryId }});
+        }
+        
+
+        return res.json({msg: categoryCharacteristicsId})
+
+        // return res.json(products);
     }
     async get(req, res) {
-        
+        const { id } = req.query;
+        if (!id) {
+            return next(ApiError.badRequest('VALUE UNDEFINED OR NULL'));
+        } else {
+            const product = await Product.findAll(id); // idk
+            return res.json(product);
+        }
     }
 }
 

@@ -10,7 +10,7 @@ class UserController {
     async check(req, res, next) {
         const { id } = req.query;
         if (!id) {
-            return next(ApiError.badRequest('Uninit ID'));
+            return next(ApiError.badRequest('VALUE UNDEFINED OR NULL'));
         } 
         res.json(id);
     }

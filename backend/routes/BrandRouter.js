@@ -5,7 +5,8 @@ const router = new Router();
 
 
 router.post('/create', BrandController.create);
-router.get('/', BrandController.getAll);
+router.get('/getAll', BrandController.getAll);
+router.get('/:id', BrandController.get);
 
 
 export default router;

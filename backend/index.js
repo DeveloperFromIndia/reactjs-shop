@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors());
+app.use(fileUpload({ useTempFiles:true }));
 app.use(express.json());
-app.use(fileUpload({}));
 app.use('/api', router);
 
 app.use(errorHandler);
@@ -21,7 +21,7 @@ app.use(errorHandler);
 const start = async () => {
     try {
         await sequelize.authenticate(); // Connection to db 
-        await sequelize.sync({alter:true, force:true}); // Reconciliation with the data schema
+        await sequelize.sync({ alter:true }); // Reconciliation with the data schema
         app.listen(PORT, () => { console.log(`<Server started on port ${PORT}/>`); })
     } catch (e) {   
         console.error(e)
