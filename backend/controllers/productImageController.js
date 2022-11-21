@@ -34,6 +34,7 @@ class ProductImageController {
                 const { img } = req.files;
                 let result = [];
                 const product_img = await Product_img.findAll({where:{ productId }});
+                
                 const product = await Product.findByPk(productId);
                 if(product === null) {
                     deleteTmpImg(img);
@@ -55,9 +56,9 @@ class ProductImageController {
                             resource_type: "auto",
                             folder: process.env.CLOUD_PRODUCT_FOLDER
                         });
-                        const { url } = file_upload; 
+                        const { url, public_id } = file_upload; 
                         
-                        const product_img = await Product_img.create({url, file_name, last_index, productId});
+                        const product_img = await Product_img.create({url, public_id, last_index, productId}); 
                         result.push(product_img);
                     }
                 } else {
@@ -67,9 +68,9 @@ class ProductImageController {
                         resource_type: "auto",
                         folder: process.env.CLOUD_PRODUCT_FOLDER
                     });
-                    const { url } = file_upload; 
+                    const { url, public_id } = file_upload; 
                     
-                    const product_img = await Product_img.create({url, file_name, index: last_index, productId});
+                    const product_img = await Product_img.create({url, public_id, index: last_index, productId}); 
                     result.push(product_img);
                 }
 
@@ -82,8 +83,21 @@ class ProductImageController {
             next(ApiError.badRequest("SOMETHING WENT WRONG"));
         }
     }
-    async delete(req, res) {
+    async delete(req, res, next) {
+        const { id } = req.query;
+        if (id > 0) {
+            const img = await Product_img.findByPk(id);
+            if(img === null) {
+                return next(ApiError.badRequest("PRODUCT_IMG NOT FOUND"));
+            }
+            const result = await cloudinary.uploader.destroy(img.public_id, (result) => {
+                console.log(result);
+            });
+            await img.destroy();
 
+            return res.json(result);
+        } 
+        return next(ApiError.badRequest("ID UNDEFINED OR NULL"));
     }
     async read(req, res) {
 

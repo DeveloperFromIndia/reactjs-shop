@@ -58,7 +58,7 @@ const Product_keyword = sequelize.define("product_keyword", {
 const Product_img = sequelize.define("product_img", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
     url:{ type:DataTypes.STRING },
-    file_name:{ type:DataTypes.STRING },
+    public_id:{ type:DataTypes.STRING },
     index:{ type:DataTypes.INTEGER }    
 });
 
