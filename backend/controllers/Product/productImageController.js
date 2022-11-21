@@ -26,61 +26,55 @@ function deleteTmpImg(img) {
 }
 
 class ProductImageController {
-    async add(req, res, next) {
+    async  add (req, res, next) {
         try {
-            const { productId } = req.query;
-
-            if (req.files !== undefined && productId > 0) {
+            if (req.files !== undefined) {
                 const { img } = req.files;
-                let result = [];
-                const product_img = await Product_img.findAll({where:{ productId }});
-                
-                const product = await Product.findByPk(productId);
-                if(product === null) {
-                    deleteTmpImg(img);
-                    return next(ApiError.badRequest("PRODUCT NOT EXISTS"))
-                }
-                
-                let last_index = null;
-                if(product_img.length > 0) {
-                    last_index = product_img.at(-1).dataValues.index + 1;
-                } else {
-                    last_index = 1; 
-                }
-
-                if (Array.isArray(img)) {
-                    for(let i = 0; i < img.length; i++, last_index++) {
-                        const file_name = uuidv4();
-                        const file_upload = await cloudinary.uploader.upload(img[i].tempFilePath, {
-                            public_id: file_name,
-                            resource_type: "auto",
-                            folder: process.env.CLOUD_PRODUCT_FOLDER
-                        });
-                        const { url, public_id } = file_upload; 
-                        
-                        const product_img = await Product_img.create({url, public_id, last_index, productId}); 
-                        result.push(product_img);
+                const { productId } = req.query;
+                if (productId > 0) {
+                    const product = await Product.findByPk(productId); 
+                    if (product === null) {
+                        deleteTmpImg(img);
+                        next(ApiError.badRequest("PRODUCT NOT EXISTS"));
+                    } else {
+                        const product_imgs = await Product_img.findAll({where:{ productId }});
+                        const last_index = product_imgs.at(-1).dataValues.index + 1;
+                        let result = [];
+                        if(Array.isArray(img)) {
+                            for (let i = 0, imgIndex = last_index; i < img.length; i++, imgIndex++) {
+                                const file_name = uuidv4();
+                                const file_upload = await cloudinary.uploader.upload(img[i].tempFilePath, {
+                                    public_id: file_name,
+                                    resource_type: "auto",
+                                    folder: process.env.CLOUD_PRODUCT_FOLDER
+                                }); 
+                                deleteTmpImg(img[i]);
+                                const { url, public_id } = file_upload; 
+                                const imageToDB = await Product_img.create({url, public_id, index: last_index, productId}); 
+                                result.push(imageToDB);
+                            }
+                        } else {
+                            const file_name = uuidv4();
+                            const file_upload = await cloudinary.uploader.upload(img.tempFilePath, {
+                                public_id: file_name,
+                                resource_type: "auto",
+                                folder: process.env.CLOUD_PRODUCT_FOLDER
+                            }); 
+                            deleteTmpImg(img);
+                            const { url, public_id } = file_upload; 
+                            const imageToDB = await Product_img.create({url, public_id, index: last_index, productId}); 
+                            result.push(imageToDB);
+                        }
+                        return res.json(result);
                     }
                 } else {
-                    const file_name = uuidv4();
-                    const file_upload = await cloudinary.uploader.upload(img.tempFilePath, {
-                        public_id: file_name,
-                        resource_type: "auto",
-                        folder: process.env.CLOUD_PRODUCT_FOLDER
-                    });
-                    const { url, public_id } = file_upload; 
-                    
-                    const product_img = await Product_img.create({url, public_id, index: last_index, productId}); 
-                    result.push(product_img);
+                    return next(ApiError.forbidden("PRODUCT ID IS MISSING"));
                 }
-
-                deleteTmpImg(img);
-                return res.json(result);
             } else {
-                next(ApiError.badRequest("FILE UNDEFINED OR WRONG ID"));
+                return next(ApiError.badRequest("FILES NOT ESISTS"));
             }
         } catch (e) {
-            next(ApiError.badRequest("SOMETHING WENT WRONG"));
+            return next(ApiError.forbidden("SOMETHINK WENT WRONG"));
         }
     }
     async delete(req, res, next) {
