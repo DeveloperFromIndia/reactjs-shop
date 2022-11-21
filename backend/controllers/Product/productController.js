@@ -1,6 +1,8 @@
-import ApiError from "../Error/ApiError.js";
 import {} from "dotenv";
-import { Product } from "../models/models.js";
+import ApiError from "../../Error/ApiError.js";
+import { Product } from "../../models/models.js";
+
+
 
 class ProductController {
     async create(req, res, next) {

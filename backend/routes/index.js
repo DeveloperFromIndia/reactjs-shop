@@ -1,11 +1,12 @@
 import { Router } from "express";
 
-import product from "./ProductRouter.js";
-import user from "./UserRouter.js";
-import brand from "./BrandRouter.js";
-import category from "./CategoryRouter.js";
-import language  from "./LanguageRouter.js";
-import currencies from "./CurrenciesRouter.js";
+import user from "./User/UserRouter.js";
+import brand from "./Brand/BrandRouter.js";
+import product from "./Product/ProductRouter.js";
+import category from "./Category/CategoryRouter.js";
+import language  from "./Language/LanguageRouter.js";
+import currencies from "./Currencies/CurrenciesRouter.js";
+
 
 
 const router = new Router();

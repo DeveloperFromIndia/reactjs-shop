@@ -1,5 +1,5 @@
-import ApiError from "../Error/ApiError.js";
-import { Language } from "../models/models.js";
+import ApiError from "../../Error/ApiError.js";
+import { Language } from "../../models/models.js";
 
 class LanguageController {
     async create(req, res, next) {

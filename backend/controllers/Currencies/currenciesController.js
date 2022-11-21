@@ -1,5 +1,5 @@
-import { Currencies } from "../models/models.js";
-import ApiError from "../Error/ApiError.js";
+import { Currencies } from "../../models/models.js";
+import ApiError from "../../Error/ApiError.js";
 
 
 class СurrenciesController {

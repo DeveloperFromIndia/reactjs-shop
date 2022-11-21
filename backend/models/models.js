@@ -80,7 +80,8 @@ const Category = sequelize.define("category", {
 
 const Category_img = sequelize.define("category_img", {
     url:{ type:DataTypes.STRING, allowNull:true },
-    index:{ type:DataTypes.INTEGER, allowNull: false }
+    index:{ type:DataTypes.INTEGER, allowNull: false },
+    public_id:{ type:DataTypes.STRING, allowNull: false }
 });
 
 const Category_translate = sequelize.define("category_translate", {

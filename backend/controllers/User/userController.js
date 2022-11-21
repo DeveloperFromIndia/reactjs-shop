@@ -1,4 +1,4 @@
-import ApiError from "../Error/ApiError.js";
+import ApiError from "../../Error/ApiError.js";
 
 class UserController {
     async registration(req, res) {

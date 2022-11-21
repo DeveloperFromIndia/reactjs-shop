@@ -1,5 +1,5 @@
 import { Router } from "express";
-import LanguageController from "../controllers/LanguageController.js";
+import LanguageController from "../../controllers/Language/languageController.js";
 
 const router = new Router();
 

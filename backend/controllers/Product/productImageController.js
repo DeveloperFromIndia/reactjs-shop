@@ -1,7 +1,7 @@
-import ApiError from "../Error/ApiError.js";
-import { Product, Product_img } from "../models/models.js";
+import ApiError from "../../Error/ApiError.js";
+import { Product, Product_img } from "../../models/models.js";
 import { v4 as uuidv4 } from "uuid";
-import cloudinary from "../utils/cloudinary.js";
+import cloudinary from "../../utils/cloudinary.js";
 import { unlink } from 'fs';
 
 
