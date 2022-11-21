@@ -99,8 +99,21 @@ class ProductImageController {
         } 
         return next(ApiError.badRequest("ID UNDEFINED OR NULL"));
     }
-    async read(req, res) {
-
+    async read(req, res, next) {
+        try {
+            const { id, productId } = req.query;
+            if (productId > 0) {
+                const imgs = await Product_img.findAll({where:{productId: productId }});
+                return res.json(imgs);
+            } else if (id > 0) {
+                const img = await Product_img.findByPk(id);
+                return res.json(img);
+            } else {
+                next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
+            }
+        } catch (e) {
+            next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
+        }
     }
 }
 
