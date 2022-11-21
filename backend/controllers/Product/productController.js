@@ -51,7 +51,7 @@ class ProductController {
         if (!id) {
             return next(ApiError.badRequest('VALUE UNDEFINED OR NULL'));
         } else {
-            const product = await Product.findAll(id); // idk
+            const product = await Product.findByPk(id);
             return res.json(product);
         }
     }

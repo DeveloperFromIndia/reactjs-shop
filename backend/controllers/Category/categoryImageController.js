@@ -2,25 +2,25 @@ import {} from "dotenv";
 import ApiError from "../../Error/ApiError.js";
 import cloudinary from "../../utils/cloudinary.js";
 import { v4 as uuidv4 } from "uuid";
-import { Product, Product_img } from "../../models/models.js";
+import { Category_img, Category } from "../../models/models.js";
 
 import { deleteTempImg } from "../../utils/myFunction.js";
 
 
-class ProductImageController {
+class СategoryImageController {
     async  add (req, res, next) {
         try {
             if (req.files !== undefined) {
                 const { img } = req.files;
                 const { productId } = req.query;
                 if (productId > 0) {
-                    const product = await Product.findByPk(productId); 
-                    if (product === null) {
+                    const category = await Category.findByPk(productId); 
+                    if (category === null) {
                         deleteTempImg(img);
                         next(ApiError.badRequest("PRODUCT NOT EXISTS"));
                     } else {
-                        const product_imgs = await Product_img.findAll({where:{ productId }});
-                        const last_index = product_imgs.at(-1).dataValues.index + 1;
+                        const category_imgs = await Category.findAll({where:{ productId }});
+                        const last_index = category_imgs.at(-1).dataValues.index + 1;
                         let result = [];
                         if(Array.isArray(img)) {
                             for (let i = 0, imgIndex = last_index; i < img.length; i++, imgIndex++) {
@@ -28,11 +28,11 @@ class ProductImageController {
                                 const file_upload = await cloudinary.uploader.upload(img[i].tempFilePath, {
                                     public_id: file_name,
                                     resource_type: "auto",
-                                    folder: process.env.CLOUD_PRODUCT_FOLDER
+                                    folder: process.env.CLOUD_CATEGORY_FOLDER
                                 }); 
                                 deleteTempImg(img[i]);
                                 const { url, public_id } = file_upload; 
-                                const imageToDB = await Product_img.create({url, public_id, index: last_index, productId}); 
+                                const imageToDB = await Category_img.create({url, public_id, index: last_index, productId}); 
                                 result.push(imageToDB);
                             }
                         } else {
@@ -40,11 +40,11 @@ class ProductImageController {
                             const file_upload = await cloudinary.uploader.upload(img.tempFilePath, {
                                 public_id: file_name,
                                 resource_type: "auto",
-                                folder: process.env.CLOUD_PRODUCT_FOLDER
+                                folder: process.env.CLOUD_CATEGORY_FOLDER
                             }); 
                             deleteTempImg(img);
                             const { url, public_id } = file_upload; 
-                            const imageToDB = await Product_img.create({url, public_id, index: last_index, productId}); 
+                            const imageToDB = await Category_img.create({url, public_id, index: last_index, productId}); 
                             result.push(imageToDB);
                         }
                         return res.json(result);
@@ -63,9 +63,9 @@ class ProductImageController {
         try {
             const { id } = req.query;
             if (id > 0) {
-                const img = await Product_img.findByPk(id);
+                const img = await Category_img.findByPk(id);
                 if(img === null) { 
-                    return next(ApiError.badRequest("PRODUCT_IMG NOT FOUND")); 
+                    return next(ApiError.badRequest("CATEGORY_IMG NOT FOUND")); 
                 } else {
                     const result = await cloudinary.uploader.destroy(img.public_id, (result) => { console.log(result); });
                     await img.destroy();
@@ -77,23 +77,23 @@ class ProductImageController {
             return next(ApiError.badRequest({error: e})); 
         }
     }
-    
     async get(req, res, next) {
         try {
-            const { id, productId } = req.query;
-            if (productId > 0) {
-                const imgs = await Product_img.findAll({where:{ productId: productId }});
-                return res.json(imgs);
-            } else if (id > 0) {
-                const img = await Product_img.findByPk(id);
-                return res.json(img);
-            } else {
-                next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
+            const { id } = req.query;
+            if (id > 0) {
+                const img = await Category_img.findByPk(id);
+                if(img === null) { 
+                    return next(ApiError.badRequest("CATEGORY_IMG NOT FOUND")); 
+                } else {
+                    return res.json(img);
+                }
             }
+            return next(ApiError.badRequest("ID UNDEFINED OR NULL"));
         } catch (e) {
-            next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
+            return next(ApiError.badRequest({error: e})); 
         }
     }
 }
 
-export default new ProductImageController();
+
+export default new СategoryImageController();

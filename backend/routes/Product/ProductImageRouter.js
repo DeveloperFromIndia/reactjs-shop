@@ -6,7 +6,7 @@ const router = new Router();
 
 router.post('/', ProductImageController.add);
 router.delete('/', ProductImageController.delete);
-router.get('/', ProductImageController.read);
+router.get('/', ProductImageController.get);
 
 
 export default router;

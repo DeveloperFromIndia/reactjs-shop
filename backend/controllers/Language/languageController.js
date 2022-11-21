@@ -2,7 +2,7 @@ import ApiError from "../../Error/ApiError.js";
 import { Language } from "../../models/models.js";
 
 class LanguageController {
-    async create(req, res, next) {
+    async add(req, res, next) {
         const { title } = req.query;
 
         if(title !== undefined && title.length > 0) {
@@ -16,22 +16,24 @@ class LanguageController {
             return next(ApiError.badRequest("INSERT VALUE"));
         }
     } 
-
-    async edit(req, res, next) {
-        
-    }
-
-    async getAll(req, res) {
-        const langs = await Language.findAll();
-        return res.json(langs);
-    }
-
+    
     async get(req, res, next) {
-        const { id } = req.query;
-        if (!id) {
-            return next(ApiError.badRequest("ID NOT EXISTS"));
-        } 
-        return res.json(id);
+        try {
+            const { id } = req.query;
+            if (!id) {
+                const langs = await Language.findAll();
+                return res.json(langs);
+            } else {
+                const lang = await Language.findByPk(id);
+                return res.json(lang);
+            }
+        } catch (e) {
+            return next(ApiError.forbidden("SOMETHINK WENT WRONG"));
+        }
+    }
+
+    async delete(req,res,next) {
+
     }
 }
 
