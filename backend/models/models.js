@@ -1,5 +1,6 @@
 import sequelize  from "../db.js";
 import { DataTypes } from "sequelize";
+import productController from "../controllers/Product/productController.js";
 
 
 const Currencies = sequelize.define("currencies", {
@@ -51,6 +52,7 @@ const Product = sequelize.define("product", {
 }, { timestamps:true });
 
 const Product_translate = sequelize.define("product_translate", {
+    id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
     title:{ type:DataTypes.STRING },
     description:{ type:DataTypes.STRING },
 });
@@ -106,9 +108,17 @@ const Category_characteristics = sequelize.define("category_characteristics", {
 });
 
 const Product_characteristics = sequelize.define("product_characteristics", {
+    id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
     value: { type:DataTypes.STRING, allowNull: false }
 });
 
+
+const Characteristics = sequelize.define("characteristics", {
+    id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
+    value: { type:DataTypes.STRING, allowNull: false },
+    decimal: { type:DataTypes.STRING, allowNull: false },
+    about: { type:DataTypes.STRING, allowNull: false }
+});
 
 const Orders = sequelize.define("orders", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
@@ -158,14 +168,40 @@ Product_in_cart.belongsTo(Cart);
 Product.hasMany(Product_in_cart);
 Product_in_cart.belongsTo(Product, { allowNull:false });
 
+Product.hasMany(Product_img);
+Product_img.belongsTo(Product);
+
 Category.hasMany(Category);
+Category.hasMany(Category_img);
+Category_img.belongsTo(Category);
 
 Category.hasMany(Product);
 Brand.hasMany(Product);
 
-
 Product.belongsToMany(Language, { through: Product_translate });
 Language.belongsToMany(Product, { through: Product_translate });
+
+Category.belongsToMany(Language, { through: Category_translate });
+Language.belongsToMany(Category, { through: Category_translate });
+Category_translate.hasMany(Category_keyword);
+Category_keyword.belongsTo(Category_translate);
+
+Language.hasMany(Characteristics);
+Characteristics.belongsTo(Language);
+
+Category.belongsToMany(Characteristics, {through: Category_characteristics});
+Characteristics.belongsToMany(Category, {through: Category_characteristics});
+
+Category_characteristics.belongsToMany(Product, { through: Product_characteristics });
+Product.belongsToMany(Category_characteristics, { through: Product_characteristics });
+
+Product_translate.hasMany(Product_keyword);
+Product_keyword.belongsTo(Product_translate);
+
+Status_translate.belongsTo(Language);
+
+Orders.hasOne(Review);
+Review.belongsTo(Orders);
 
 
 
@@ -185,6 +221,7 @@ export {
     Category_characteristics,
     Category_keyword,
     Category_translate,
+    Characteristics,
     Cart,
     Orders,
     Status,
