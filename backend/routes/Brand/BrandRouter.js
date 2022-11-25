@@ -4,9 +4,9 @@ import BrandController from "../../controllers/Brand/brandController.js";
 const router = new Router();
 
 
-router.post('/create', BrandController.create);
-router.get('/getAll', BrandController.getAll);
-router.get('/:id', BrandController.get);
+router.post('/', BrandController.create);
+router.get('/', BrandController.get);
+router.get('/', BrandController.delete);
 
 
 export default router;

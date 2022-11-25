@@ -4,11 +4,11 @@ import CategoryController from "../../controllers/Category/categoryController.js
 import CategoryCharacteristics from "./CategoryCharacteristicsRouter.js";
 import CategoryTranslate from "./CategoryTranslateRouter.js";
 import CategoryKeyword from "./CategoryKeywordRouter.js";
-
+import CategoryImg from "./CategoryImageRouter.js";
 
 const router = new Router();
 
-
+router.use('/img', CategoryImg);
 router.use('/characteristics', CategoryCharacteristics);
 router.use('/translate', CategoryTranslate);
 router.use('/keyword', CategoryKeyword);

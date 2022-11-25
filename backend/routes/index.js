@@ -6,11 +6,12 @@ import product from "./Product/ProductRouter.js";
 import category from "./Category/CategoryRouter.js";
 import language  from "./Language/LanguageRouter.js";
 import currencies from "./Currencies/CurrenciesRouter.js";
-
+import status from "./Status/StatusRouter.js";
 
 
 const router = new Router();
 
+router.use('/status',status);
 router.use('/language', language)
 router.use('/product', product);
 router.use('/brand', brand);

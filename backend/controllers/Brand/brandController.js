@@ -14,12 +14,12 @@ class BrandController {
         }
     } 
     
-    async getAll(req, res) {
+    async get(req, res) {
         const brands = await Brand.findAll();
         return res.json(brands);
     }
 
-    async get(req, res) {
+    async delete(req, res) {
         
     }
 }

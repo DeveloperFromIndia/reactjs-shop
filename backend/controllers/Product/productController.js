@@ -13,7 +13,7 @@ class ProductController {
                 categoryId, brandId, 
                 hiden 
             } = req.query;
-            
+
             const product = await Product.create({ vendor_code, 
                 price, price_old, 
                 amount, min_order_amount, max_order_amount, 
@@ -23,37 +23,22 @@ class ProductController {
 
             return res.json(product);
         } catch(e) {
-            console.error(e);
-            return next(ApiError.badRequest("VALUE ALREADY EXISTS"));
+            return next(ApiError.badRequest("VALUE ALREADY EXISTS OR CATEGORY OR BRAND ID NOT EXISTS"));
         }
     } 
-    async getAll(req, res) {
-        const { brandId, categoryId } = req.query;
-        let products = null;
-        
-        if(!brandId && !categoryId) {
-            products = await Product.findAll();
-        } 
-        else if (brandId && !categoryId) {
-            products = await Product.findAll({where:{ brandId }});
-        }   
-        else if (categoryId && !brandId) {
-            products = await Product.findAll({where:{ categoryId }});
+    async get(req, res, next) {
+        try {
+            const { brandId, categoryId, charactId } = req.query;
+            
+
+        } catch (e) {
+            return next(ApiError.badRequest("SOMTHINK WENT WRONG"));
         }
+
         
-
-        return res.json({msg: categoryCharacteristicsId})
-
-        // return res.json(products);
     }
-    async get(req, res) {
-        const { id } = req.query;
-        if (!id) {
-            return next(ApiError.badRequest('VALUE UNDEFINED OR NULL'));
-        } else {
-            const product = await Product.findByPk(id);
-            return res.json(product);
-        }
+    async delete(req, res, next) {
+
     }
 }
 

@@ -32,6 +32,10 @@ const Users = sequelize.define("users", {
     last_name:{ type: DataTypes.STRING },
     phone:{ type:DataTypes.STRING, unique:true },
     email:{ type:DataTypes.STRING, unique:true },
+    full_name: { type:DataTypes.VIRTUAL, 
+        get() { return `${this.first_name} ${this.last_name}`},
+        set(value) { throw new Error("ACTION FORBIDDEN")}
+    }
 }, { timestamps: true });
 
 
@@ -47,9 +51,10 @@ const Product = sequelize.define("product", {
 }, { timestamps:true });
 
 const Product_translate = sequelize.define("product_translate", {
-    title:{ type:DataTypes.STRING, unique:true },
-    description:{ type:DataTypes.STRING }
+    title:{ type:DataTypes.STRING },
+    description:{ type:DataTypes.STRING },
 });
+
 
 const Product_keyword = sequelize.define("product_keyword", {
     value:{ type:DataTypes.STRING }
@@ -132,35 +137,36 @@ const Review = sequelize.define("review", {
     text:{ type:DataTypes.STRING, allowNull:true},    
 }, { timestamps:true });
 
- 
-Product.hasMany(Product_img);
-Product.hasMany(Product_translate);
-Product_translate.hasMany(Product_keyword);
-Language.hasMany(Product_translate);
-Brand.hasMany(Product);
 
-Category.hasMany(Category_translate);
-Category_translate.hasMany(Category_keyword);
 
-Category.belongsTo(Category);
-Category.hasMany(Product);
-Category.hasMany(Category_img);
-Category.hasMany(Category_characteristics);
-Language.hasMany(Category_characteristics);
-
-Category_characteristics.hasMany(Product_characteristics);
-Product.hasMany(Product_characteristics);
-
-Cart.hasMany(Product_in_cart);
-Product.hasMany(Product_in_cart);
 
 Users.hasOne(Cart);
+Cart.belongsTo(Users);
 
 Users.hasMany(Orders);
-Status.hasOne(Orders);
+Orders.belongsTo(Users);
 
-Status.hasOne(Status_translate);
-Language.hasMany(Status_translate);
+Status.hasMany(Orders);
+Orders.belongsTo(Status);
+
+Status.hasMany(Status_translate);
+Status_translate.belongsTo(Status);
+
+Cart.hasMany(Product_in_cart);
+Product_in_cart.belongsTo(Cart);
+
+Product.hasMany(Product_in_cart);
+Product_in_cart.belongsTo(Product, { allowNull:false });
+
+Category.hasMany(Category);
+
+Category.hasMany(Product);
+Brand.hasMany(Product);
+
+
+Product.belongsToMany(Language, { through: Product_translate });
+Language.belongsToMany(Product, { through: Product_translate });
+
 
 
 export {

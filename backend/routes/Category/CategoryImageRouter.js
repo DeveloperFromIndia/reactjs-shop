@@ -1,5 +1,5 @@
 import { Router } from "express";
-import CategoryImageController from "../../controllers/Category/сategoryImageController.js";
+import CategoryImageController from "../../controllers/Category/categoryImageController.js";
 
 
 const router = new Router();

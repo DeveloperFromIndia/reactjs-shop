@@ -18,9 +18,10 @@ class ProductImageController {
                     if (product === null) {
                         deleteTempImg(img);
                         next(ApiError.badRequest("PRODUCT NOT EXISTS"));
-                    } else {
+                    } 
+                    else {
                         const product_imgs = await Product_img.findAll({where:{ productId }});
-                        const last_index = product_imgs.at(-1).dataValues.index + 1;
+                        const last_index = !product_imgs ? product_imgs.at(-1).dataValues.index + 1 : 1;
                         let result = [];
                         if(Array.isArray(img)) {
                             for (let i = 0, imgIndex = last_index; i < img.length; i++, imgIndex++) {
@@ -77,21 +78,13 @@ class ProductImageController {
             return next(ApiError.badRequest({error: e})); 
         }
     }
-    
     async get(req, res, next) {
         try {
             const { id, productId } = req.query;
-            if (productId > 0) {
-                const imgs = await Product_img.findAll({where:{ productId: productId }});
-                return res.json(imgs);
-            } else if (id > 0) {
-                const img = await Product_img.findByPk(id);
-                return res.json(img);
-            } else {
-                next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
-            }
+            const img = productId > 0 ? await Product_img.findAll({where:{productId}}) : await Product_img.findByPk(id);
+            return img === null || img.length === 0 ? next(ApiError.badRequest("IMAGE NOT EXISTS")) : res.json(img);
         } catch (e) {
-            next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
+            return next(ApiError.badRequest("ID UNDEFINED OR NULL"));            
         }
     }
 }

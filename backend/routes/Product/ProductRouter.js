@@ -18,9 +18,9 @@ router.use('/keyword', productKeyword);
 router.use('/characteristics', productCharacteristics);
 router.use('/img', productImg);
 
-router.post('/create', ProductController.create);
-router.get('/getAll', ProductController.getAll);
-router.get('/:id', ProductController.get);
+router.post('/', ProductController.create);
+router.get('/', ProductController.get);
+router.delete('/', ProductController.delete);
 
 
 export default router;

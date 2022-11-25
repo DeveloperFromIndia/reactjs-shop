@@ -5,8 +5,12 @@ import { Category_characteristics } from "../../models/models.js";
 
 
 class CategoryCharacteristicsController {
-    async add(req,res,next) {
-        
+    async add(req, res, next) {
+        try {
+
+        } catch (e) {
+            
+        }
     }
     async delete(req,res,next) {
 
