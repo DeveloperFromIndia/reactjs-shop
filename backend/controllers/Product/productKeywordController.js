@@ -8,7 +8,7 @@ class ProductKeywordController {
     async add(req,res,next) {
         try {
             const { value, productTranslateId } = req.query;
-            const result = !value && !productTranslateId ? next(ApiError.badRequest("")) : await Product_keyword.create({value, productTranslateId});
+            const result = !value && !productTranslateId ? next(ApiError.badRequest("VALUES NOT EXISTS")) : await Product_keyword.create({ value: value.replace(/\s+/g, ' ').trim(), productTranslateId});
             return res.json(result); 
         } catch (e) {
             return next(ApiError.badRequest("SOMETHINK WENT WRONG"));

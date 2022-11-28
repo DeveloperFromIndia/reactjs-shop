@@ -57,7 +57,7 @@ class СategoryImageController {
                 return next(ApiError.badRequest("FILES NOT ESISTS"));
             }
         } catch (e) {
-            return next(ApiError.forbidden("SOMETHINK WENT WRONG"));
+            return next(ApiError.badRequest({error: e}));
         }
     }
     async delete(req, res, next) {

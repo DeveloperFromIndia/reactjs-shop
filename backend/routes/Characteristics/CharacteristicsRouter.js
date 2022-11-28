@@ -1,11 +1,13 @@
 import { Router } from "express";
-import CharacteristicsRouter from "../../controllers/Characteristics/characteristicsController.js";
+import translate from "./CharacteristicsTranslateRouter.js";
+import CharacteristicsController from "../../controllers/Characteristics/characteristicsController.js";
 const router = new Router();
 
+router.use("/translate", translate);
 
-router.post('/', CharacteristicsRouter.add);
-router.get('/', CharacteristicsRouter.get);
-router.delete('/', CharacteristicsRouter.delete);
+router.post('/', CharacteristicsController.add);
+router.get('/', CharacteristicsController.get);
+router.delete('/', CharacteristicsController.delete);
 
 
 export default router;

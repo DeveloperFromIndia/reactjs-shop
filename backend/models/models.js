@@ -1,6 +1,5 @@
 import sequelize  from "../db.js";
 import { DataTypes } from "sequelize";
-import productController from "../controllers/Product/productController.js";
 
 
 const Currencies = sequelize.define("currencies", {
@@ -23,7 +22,6 @@ const Brand = sequelize.define("brand", {
     country: { type: DataTypes.STRING },
     url: { type: DataTypes.STRING, allowNull:true }
 });
-
 
 const Users = sequelize.define("users", {
     id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement:true },
@@ -98,13 +96,13 @@ const Category_translate = sequelize.define("category_translate", {
 });
 
 const Category_keyword = sequelize.define("category_keyword", {
+    id:{ type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     value:{ type:DataTypes.STRING, unique:true, allowNull: false }
 });
 
 
 const Category_characteristics = sequelize.define("category_characteristics", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
-    value:{ type:DataTypes.STRING, allowNull: false }
 });
 
 const Product_characteristics = sequelize.define("product_characteristics", {
@@ -115,24 +113,29 @@ const Product_characteristics = sequelize.define("product_characteristics", {
 
 const Characteristics = sequelize.define("characteristics", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
+});
+
+const Characteristics_translate = sequelize.define("characteristics_translate", {
     value: { type:DataTypes.STRING, allowNull: false },
-    decimal: { type:DataTypes.STRING, allowNull: false },
-    about: { type:DataTypes.STRING, allowNull: false }
+    decimal: { type:DataTypes.STRING, allowNull: true },
+    about: { type:DataTypes.STRING, allowNull: true }
 });
 
 const Orders = sequelize.define("orders", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
-    comment: { type:DataTypes.STRING }
+    comment: { type:DataTypes.STRING , allowNull:true}
 }, { timestamps:true });
 
 const Product_in_order = sequelize.define("product_in_order", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
+    price: { type:DataTypes.DOUBLE, allowNull:false },
     amount: { type:DataTypes.INTEGER, allowNull:false }
 }, { timestamps:true });
 
 
 const Status = sequelize.define("status", {
     id: { type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true },
+    url: { type:DataTypes.STRING, allowNull: true },
     color: { type:DataTypes.STRING, allowNull:false },
 });
 
@@ -150,7 +153,7 @@ const Review = sequelize.define("review", {
 
 
 
-Users.hasOne(Cart);
+Users.hasOne(Cart, { onDelete: "CASCADE" });
 Cart.belongsTo(Users);
 
 Users.hasMany(Orders);
@@ -159,19 +162,14 @@ Orders.belongsTo(Users);
 Status.hasMany(Orders);
 Orders.belongsTo(Status);
 
-Status.hasMany(Status_translate);
-Status_translate.belongsTo(Status);
+Cart.belongsToMany(Product, { through: Product_in_cart });
+Product.belongsToMany(Cart, { through: Product_in_cart });
 
-Cart.hasMany(Product_in_cart);
-Product_in_cart.belongsTo(Cart);
-
-Product.hasMany(Product_in_cart);
-Product_in_cart.belongsTo(Product, { allowNull:false });
-
-Product.hasMany(Product_img);
+Product.hasMany(Product_img, { onDelete: "CASCADE" });
 Product_img.belongsTo(Product);
 
-Category.hasMany(Category);
+Category.hasOne(Category);
+
 Category.hasMany(Category_img);
 Category_img.belongsTo(Category);
 
@@ -183,22 +181,27 @@ Language.belongsToMany(Product, { through: Product_translate });
 
 Category.belongsToMany(Language, { through: Category_translate });
 Language.belongsToMany(Category, { through: Category_translate });
-Category_translate.hasMany(Category_keyword);
+
+Category_translate.hasMany(Category_keyword, { onDelete:"CASCADE" });
 Category_keyword.belongsTo(Category_translate);
 
-Language.hasMany(Characteristics);
-Characteristics.belongsTo(Language);
+Characteristics.belongsToMany(Language, { through: Characteristics_translate });
+Language.belongsToMany(Characteristics, { through: Characteristics_translate });
 
 Category.belongsToMany(Characteristics, {through: Category_characteristics});
 Characteristics.belongsToMany(Category, {through: Category_characteristics});
 
-Category_characteristics.belongsToMany(Product, { through: Product_characteristics });
-Product.belongsToMany(Category_characteristics, { through: Product_characteristics });
+Characteristics.belongsToMany(Product, { through: Product_characteristics });
+Product.belongsToMany(Characteristics, { through: Product_characteristics });
 
-Product_translate.hasMany(Product_keyword);
+Product_translate.hasMany(Product_keyword, { onDelete:"CASCADE" });
 Product_keyword.belongsTo(Product_translate);
 
-Status_translate.belongsTo(Language);
+Status.belongsToMany(Language, { through:Status_translate });
+Language.belongsToMany(Status, { through:Status_translate });
+
+Orders.belongsToMany(Product, { through: Product_in_order });
+Product.belongsToMany(Orders, { through: Product_in_order });
 
 Orders.hasOne(Review);
 Review.belongsTo(Orders);
@@ -222,6 +225,7 @@ export {
     Category_keyword,
     Category_translate,
     Characteristics,
+    Characteristics_translate,
     Cart,
     Orders,
     Status,

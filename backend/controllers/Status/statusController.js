@@ -8,9 +8,8 @@ class StatusController {
     async add(req,res,next) {
         try {
             const { status_id } = req.query;
-            if (status_id > 0) {
 
-            }
+            
         } catch (e) {
 
         }

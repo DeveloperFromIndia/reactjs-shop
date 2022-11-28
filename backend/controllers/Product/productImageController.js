@@ -17,7 +17,7 @@ class ProductImageController {
                     const product = await Product.findByPk(productId); 
                     if (product === null) {
                         deleteTempImg(img);
-                        next(ApiError.badRequest("PRODUCT NOT EXISTS"));
+                        return next(ApiError.badRequest("PRODUCT NOT EXISTS"));
                     } 
                     else {
                         const product_imgs = await Product_img.findAll({where:{ productId }});
